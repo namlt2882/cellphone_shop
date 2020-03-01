@@ -6,11 +6,13 @@ var router = express.Router();
 
 router.post("/register", (req, res, next) => {
   let body = req.body;
-  insert(transfer(body), user => {
-    res.status(201).end(JSON.stringify(user));
-  }).catch(e => {
-    res.status(500).end(e);
-  });
+  insert(transfer(body))
+    .then(user => {
+      res.status(201).end(JSON.stringify(user));
+    })
+    .catch(e => {
+      res.status(500).end(e);
+    });
 });
 
 router.post("/login", (req, res, next) => {
@@ -68,21 +70,34 @@ function getByUsername(username) {
   });
 }
 
-function insert(newUser, callback = user => {}) {
-  return getByUsername(newUser.username).then(existingUser => {
-    if (existingUser) {
-      throw `The username ${existingUser.username} is already existed!`;
-    }
-    repository.insert("user", newUser, (err, result) => {
-      if (err) throw err;
-      callback(transfer(result.ops[0]));
-    });
+function insert(newUser) {
+  newUser.role = "customer";
+  return new Promise((resolve, reject) => {
+    getByUsername(newUser.username)
+      .then(existingUser => {
+        if (existingUser) {
+          reject(`The username ${existingUser.username} is already existed!`);
+        }
+        repository.insert("user", newUser, (err, result) => {
+          if (err) reject(err);
+          resolve(transfer(result.ops[0]));
+        });
+      })
+      .catch(e => reject(e));
   });
 }
 
 function transfer(obj) {
   let user = new User();
-  return Object.assign(user, obj);
+  Object.assign(user, obj);
+  repository.normalize(user);
+  return user;
 }
 
-export default router;
+export {
+  router as usersRouter,
+  insert,
+  getByUsername,
+  getByUsernameAndPassword,
+  transfer
+};
