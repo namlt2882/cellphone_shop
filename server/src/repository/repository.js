@@ -1,12 +1,12 @@
 import mongodb from 'mongodb'
+import { MONGODB_URL } from '../config'
 
 var MongoClient = mongodb.MongoClient;
-var url = "mongodb://localhost:27017/";
 var database;
 
 function db(collectionName, callback) {
     var onConnected = () => {
-        var dbo = database.db('cellphone_shop')
+        var dbo = database.db('cellphoneshop')
         var collection = dbo.collection(collectionName);
         callback(collection, database)
     }
@@ -18,7 +18,7 @@ function db(collectionName, callback) {
             database = null
         }
     }
-    MongoClient.connect(url, (err, db) => {
+    MongoClient.connect(MONGODB_URL, (err, db) => {
         if (err) throw err
         database = db;
         onConnected();
@@ -31,4 +31,4 @@ function insert(collectionName, object, callback) {
     })
 }
 
-module.exports = { db, insert };
+export default { db, insert };

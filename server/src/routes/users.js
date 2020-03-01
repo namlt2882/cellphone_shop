@@ -1,15 +1,88 @@
-import express from 'express'
+import express from "express";
 import repository from "../repository/repository";
+import User from "../dto/user";
 
 var router = express.Router();
 
-router.post("/register", function(req, res, next) {
+router.post("/register", (req, res, next) => {
   let body = req.body;
-
-  repository.insert("user", newObj, (err, result) => {
-    if (err) throw err;
-    res.status(201).end(JSON.stringify(result.ops[0]));
+  insert(transfer(body), user => {
+    res.status(201).end(JSON.stringify(user));
+  }).catch(e => {
+    res.status(500).end(e);
   });
 });
 
-export default router
+router.post("/login", (req, res, next) => {
+  let body = req.body;
+  getByUsernameAndPassword(transfer(body))
+    .then(user => {
+      if (user) {
+        var accessObject = {
+          role: user.role,
+          token: "abcxyz"
+        };
+        res.status(200).end(JSON.stringify(accessObject));
+      } else {
+        res.status(401).end("Unauthorized");
+      }
+    })
+    .catch(e => {
+      res.status(500).end(e);
+    });
+});
+
+function getByUsernameAndPassword(user) {
+  return new Promise((resolve, reject) => {
+    repository.db("user", collection => {
+      collection
+        .find({ username: user.username, password: user.password })
+        .toArray((err, result) => {
+          if (err) {
+            reject(err);
+          }
+          if (result && result.length > 0) {
+            resolve(transfer(result[0]));
+          } else {
+            resolve(null);
+          }
+        });
+    });
+  });
+}
+
+function getByUsername(username) {
+  return new Promise((resolve, reject) => {
+    repository.db("user", collection => {
+      collection.find({ username: username }).toArray((err, result) => {
+        if (err) {
+          reject(err);
+        }
+        if (result && result.length > 0) {
+          resolve(transfer(result[0]));
+        } else {
+          resolve(null);
+        }
+      });
+    });
+  });
+}
+
+function insert(newUser, callback = user => {}) {
+  return getByUsername(newUser.username).then(existingUser => {
+    if (existingUser) {
+      throw `The username ${existingUser.username} is already existed!`;
+    }
+    repository.insert("user", newUser, (err, result) => {
+      if (err) throw err;
+      callback(transfer(result.ops[0]));
+    });
+  });
+}
+
+function transfer(obj) {
+  let user = new User();
+  return Object.assign(user, obj);
+}
+
+export default router;
