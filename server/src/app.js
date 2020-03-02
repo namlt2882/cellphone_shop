@@ -8,8 +8,12 @@ import indexRouter from "./routes/index";
 import { usersRouter } from "./routes/users";
 import { categoriesRouter } from "./routes/categories";
 import { productsRouter } from "./routes/products";
+import cors from "cors";
 
 var app = express();
+
+// set cors middleware
+app.use(cors());
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
