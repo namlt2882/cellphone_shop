@@ -1,6 +1,21 @@
-import { Request, AuthRequest } from './../utils/request'
+import { Request } from './../utils/request'
 
 export const UserService = {
+    isLoggedIn: () => {
+        let token = localStorage.getItem('token')
+        if (token) {
+            return true
+        }
+        return false
+    },
+    removeJwt: () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        localStorage.removeItem('name');
+    },
+    handleCommonError: () => {
+
+    },
     login: (username, password) => {
         return Request().post('user/login', {
             'username': username,
