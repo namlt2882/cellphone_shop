@@ -21,6 +21,7 @@ router.post("/login", (req, res, next) => {
     .then(user => {
       if (user) {
         var accessObject = {
+          name: user.name,
           role: user.role,
           token: "abcxyz"
         };
