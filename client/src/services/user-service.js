@@ -13,9 +13,6 @@ export const UserService = {
         localStorage.removeItem('role');
         localStorage.removeItem('name');
     },
-    handleCommonError: () => {
-
-    },
     login: (username, password) => {
         return Request().post('user/login', {
             'username': username,

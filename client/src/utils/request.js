@@ -1,5 +1,14 @@
 import Axios from "axios";
 import { HOST_NAME } from "../constants";
+import { UserService } from "../services/user-service";
+
+export const handleCommonError = error => {
+  if (error.response.status === 401) {
+    alert("Your session has expire!");
+    UserService.removeJwt();
+    window.location.reload();
+  }
+};
 
 export const Request = () => {
   return Axios.create({
