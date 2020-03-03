@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { CategoryAction } from "../actions/category-action";
+import { CategoryAction } from "../../actions/category-action";
 
-import { CategoryService } from "../services/category-service";
-import { handleCommonError } from "../utils/request";
+import { CategoryService } from "../../services/category-service";
+import { handleCommonError } from "../../utils/request";
 import {
   Avatar,
   makeStyles,

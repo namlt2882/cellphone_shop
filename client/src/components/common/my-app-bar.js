@@ -12,7 +12,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import { Button } from "@material-ui/core";
-import CustomFilter from "../custom-filter";
+import CustomFilter from "./custom-filter";
 import { UserService } from "../../services/user-service";
 
 const drawerWidth = 240;

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { UserService } from "../services/user-service";
+import { UserService } from "../../services/user-service";
 import Button from "@material-ui/core/Button";
 import { TextField, Grid } from "@material-ui/core";
 
@@ -32,7 +32,7 @@ class LoginPage extends Component {
         justify="center"
         alignItems="center"
       >
-        <Grid item xs={4}>
+        <Grid item xs={2}>
           <form>
             <h1>Login</h1>
             <TextField

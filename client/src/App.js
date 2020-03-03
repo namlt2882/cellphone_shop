@@ -1,10 +1,10 @@
 import React from "react";
 import "./App.css";
 import { UserService } from "./services/user-service";
-import LoginPage from "./components/login-page";
+import LoginPage from "./components/common/login-page";
 import { Grid, Container } from "@material-ui/core";
 import MyAppBar from "./components/common/my-app-bar";
-import CategoryList from "./components/category-list";
+import CategoryList from "./components/category/category-list";
 
 function App() {
   return (
