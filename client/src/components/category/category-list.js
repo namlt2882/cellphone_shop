@@ -1,38 +1,60 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { CategoryAction } from "../../actions/category-action";
+import { SystemAction } from "../../actions/system-action";
 
 import { CategoryService } from "../../services/category-service";
 import { handleCommonError } from "../../utils/request";
-import {
-  Avatar,
-  makeStyles,
-  withStyles,
-  Grid,
-  Tooltip
-} from "@material-ui/core";
+import { Avatar, withStyles, Grid, Tooltip } from "@material-ui/core";
 import { deepOrange, green } from "@material-ui/core/colors";
+import { ProductService } from "../../services/product-service";
+import { ProductAction } from "../../actions/product-action";
 
 class CategoryList extends Component {
   componentDidMount() {
     CategoryService.getAll()
       .then(res => {
-        this.props.setCategories(res.data);
+        let list = res.data;
+        this.props.setCategories(list);
+        if (list.length > 1) {
+          this.setChoosingCategory(list[0]._id);
+        } else {
+          this.props.setChoosingCategory(null);
+        }
       })
       .catch(err => {
         handleCommonError(err);
       });
   }
 
+  setChoosingCategory = categoryId => {
+    this.props.setChoosingCategory(categoryId);
+    ProductService.getByCategory(categoryId)
+      .then(res => {
+        this.props.setProducts(res.data);
+      })
+      .catch(e => {
+        handleCommonError(e);
+      });
+  };
+
   render() {
-    const classes = this.props.classes;
-    let categories = this.props.categories;
+    let { classes, categories, system } = this.props;
+
     return [
       <Grid item xs={8}>
         <div className={classes.root} style={{ overflowX: "auto" }}>
           {categories.map(val => (
             <Tooltip title={val.name} arrow>
-              <Avatar variant="square" className={classes.square}>
+              <Avatar
+                variant="square"
+                className={
+                  system.categoryId === val._id ? classes.orange : classes.green
+                }
+                onClick={() => {
+                  this.setChoosingCategory(val._id);
+                }}
+              >
                 {val.name}
               </Avatar>
             </Tooltip>
@@ -55,9 +77,15 @@ const styles = theme => ({
       margin: theme.spacing(1)
     }
   },
-  square: {
+  orange: {
     color: theme.palette.getContrastText(deepOrange[500]),
     backgroundColor: deepOrange[500],
+    width: "150px",
+    cursor: "pointer"
+  },
+  green: {
+    color: "#fff",
+    backgroundColor: green[500],
     width: "150px",
     cursor: "pointer"
   },
@@ -69,12 +97,20 @@ const styles = theme => ({
 });
 
 const mapStateToProps = state => ({
-  categories: state.categories
+  categories: state.categories,
+  system: state.system,
+  products: state.products
 });
 
 const mapDispatchToProps = dispatch => ({
   setCategories: list => {
     dispatch(CategoryAction.setCategories(list));
+  },
+  setChoosingCategory: categoryId => {
+    dispatch(SystemAction.setChoosingCategory(categoryId));
+  },
+  setProducts: list => {
+    dispatch(ProductAction.setProducts(list));
   }
 });
 

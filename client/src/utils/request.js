@@ -7,6 +7,8 @@ export const handleCommonError = error => {
     alert("Your session has expire!");
     UserService.removeJwt();
     window.location.reload();
+  } else {
+    console.log(error)
   }
 };
 

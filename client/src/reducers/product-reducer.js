@@ -1,6 +1,6 @@
 import * as Type from "../actions/actions";
 
-export const products = (state = [], { type, list, cat: product }) => {
+export const products = (state = [], { type, list, product }) => {
   var index;
   switch (type) {
     case Type.SET_PRODUCTS:

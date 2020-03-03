@@ -1,8 +1,8 @@
 import { AuthRequest } from "./../utils/request";
 
 export const ProductService = {
-  getAll: () => {
-    return AuthRequest.get("product");
+  getByCategory: categoryId => {
+    return AuthRequest.get(`product?categoryId=${categoryId}`);
   },
   get: id => {
     return AuthRequest.get(`product/${id}`);
