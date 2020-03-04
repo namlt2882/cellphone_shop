@@ -1,5 +1,7 @@
 // system
 export const SET_CHOSSING_CATEGORY = "SET_CHOSSING_CATEGORY"
+export const SET_SORT_TYPE = "SET_SORT_TYPE"
+export const SET_RANGE_VALUE = "SET_RANGE_VALUE"
 
 // category
 export const SET_CATEGORIES = "SET_CATEGORIES";

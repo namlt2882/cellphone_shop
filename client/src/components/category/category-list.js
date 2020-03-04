@@ -9,6 +9,7 @@ import { Avatar, withStyles, Grid, Tooltip } from "@material-ui/core";
 import { deepOrange, green } from "@material-ui/core/colors";
 import { ProductService } from "../../services/product-service";
 import { ProductAction } from "../../actions/product-action";
+import { sortProduct } from "../common/custom-filter";
 
 class CategoryList extends Component {
   componentDidMount() {
@@ -31,7 +32,9 @@ class CategoryList extends Component {
     this.props.setChoosingCategory(categoryId);
     ProductService.getByCategory(categoryId)
       .then(res => {
-        this.props.setProducts(res.data);
+        let list = res.data;
+        sortProduct(list, this.props.system.sortType, this.props.system.rangeValue);
+        this.props.setProducts(list);
       })
       .catch(e => {
         handleCommonError(e);
@@ -44,8 +47,8 @@ class CategoryList extends Component {
     return [
       <Grid item xs={8}>
         <div className={classes.root} style={{ overflowX: "auto" }}>
-          {categories.map(val => (
-            <Tooltip title={val.name} arrow>
+          {categories.map((val, i) => (
+            <Tooltip title={val.name} arrow key={i}>
               <Avatar
                 variant="square"
                 className={

@@ -18,9 +18,12 @@ import {
 class ProductList extends Component {
   render() {
     let { products } = this.props;
+    products = products.filter(pro => pro._show);
     return (
       <Grid item xs={8}>
-        <i><font size="3">Found {products.length} product(s) in DB...</font></i>
+        <i>
+          <font size="3">Found {products.length} product(s) in DB...</font>
+        </i>
         <TableContainer component={Paper}>
           <Table className={this.props.classes.table} aria-label="simple table">
             <TableHead>
