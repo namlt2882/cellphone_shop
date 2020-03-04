@@ -7,7 +7,7 @@ import * as categoriesRepo from "./categories";
 var router = express.Router();
 
 router.get("/", (req, res, next) => {
-  var categoryId = req.query.categoryId
+  var categoryId = req.query.categoryId;
   getByCategory(categoryId)
     .then(categories => {
       res.status(200).end(JSON.stringify(categories));
@@ -71,7 +71,17 @@ function insert(product) {
         .get(ObjectId(categoryId))
         .then(cat => {
           if (cat) {
-            doInsert();
+            getByCode(product.code)
+              .then(pro => {
+                if (pro) {
+                  reject(
+                    `The product with code ${product.code} is already existed!`
+                  );
+                } else {
+                  doInsert();
+                }
+              })
+              .catch(e => reject(e));
           } else {
             reject(`The category with id ${categoryId} is not existed!`);
           }
@@ -100,10 +110,29 @@ function getByCategory(categoryId) {
   });
 }
 
+function getByCode(code) {
+  return new Promise((resolve, reject) => {
+    repository.db("product", collection => {
+      collection
+        .find({ status: "active", code: code })
+        .sort({ insertedDate: -1 })
+        .toArray((err, result) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(transfer(result[0]));
+        });
+    });
+  });
+}
+
 function transfer(obj) {
+  if (!obj) {
+    return null;
+  }
   let product = new Product();
   Object.assign(product, obj);
-  if (typeof obj.insertedDate != 'object') {
+  if (typeof obj.insertedDate != "object") {
     product.insertedDate = Date.parse(obj.insertedDate);
   }
   repository.normalize(product);
@@ -125,4 +154,11 @@ function get(id) {
   });
 }
 
-export { router as productsRouter, insert, getByCategory, countByCategory, get };
+export {
+  router as productsRouter,
+  insert,
+  getByCategory,
+  countByCategory,
+  get,
+  getByCode
+};

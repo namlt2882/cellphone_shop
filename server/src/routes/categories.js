@@ -98,6 +98,9 @@ function get(id) {
 }
 
 function transfer(obj) {
+  if (!obj) {
+    return null
+  }
   let category = new Category();
   Object.assign(category, obj);
   repository.normalize(category);
