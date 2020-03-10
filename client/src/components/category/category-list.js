@@ -10,6 +10,7 @@ import { deepOrange, green } from "@material-ui/core/colors";
 import { ProductService } from "../../services/product-service";
 import { ProductAction } from "../../actions/product-action";
 import { sortProduct } from "../common/custom-filter";
+import AddCategory from "./add-category";
 
 class CategoryList extends Component {
   componentDidMount() {
@@ -65,9 +66,7 @@ class CategoryList extends Component {
         </div>
       </Grid>,
       <Grid item xs={2}>
-        <Tooltip title="Add new category" arrow>
-          <Avatar className={classes.rounded}>+</Avatar>
-        </Tooltip>
+        <AddCategory/>
       </Grid>
     ];
   }
