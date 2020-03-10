@@ -14,6 +14,7 @@ import {
   Paper,
   Grid
 } from "@material-ui/core";
+import AddProduct from "./add-product";
 
 class ProductList extends Component {
   render() {
@@ -23,6 +24,7 @@ class ProductList extends Component {
       <Grid item xs={8}>
         <i>
           <font size="3">Found {products.length} product(s) in DB...</font>
+          <AddProduct/>
         </i>
         <TableContainer component={Paper}>
           <Table className={this.props.classes.table} aria-label="simple table">
